@@ -1,5 +1,5 @@
 #!/bin/bash
-instance_ip=$(curl http://169.254.169.254/latest/meta-data/public-ipv4)
+export LOCALIP=$(curl http://169.254.169.254/latest/meta-data/public-ipv4)
 sudo apt update
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 sudo add-apt-repository \
@@ -8,9 +8,4 @@ sudo add-apt-repository \
     stable"
 sudo apt install -y docker-ce docker-ce-cli containerd.io
 sudo systemctl enable docker.service
-sudo docker run -d \
-    -e LOCALIP=$instance_ip \ 
-    --name jmeter-slave \
-    -p 1099:1099 \
-    -p 50000:50000 \
-    vinsdocker/jmawsserver /bin/bash
+sudo docker run -d -e LOCALIP=$instance_ip --name jmeter-slave -p 1099:1099 -p 50000:50000 vinsdocker/jmawsserver /bin/bash
